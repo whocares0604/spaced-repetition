@@ -1,0 +1,3 @@
+ALTER TABLE card
+ADD COLUMN repetitions INT NOT NULL DEFAULT 0 CHECK (repetitions >= 0),
+ADD COLUMN ease_factor DOUBLE PRECISION NOT NULL DEFAULT 2.5 CHECK (ease_factor >= 1.3);

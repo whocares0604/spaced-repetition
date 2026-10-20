@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,6 +25,26 @@ class SpacedRepetitionApplicationTest {
                 .query(String.class)
                 .list();
 
-        assertThat(appliedVersions).containsExactly("1", "2", "3");
+        assertThat(appliedVersions).containsExactly("1", "2", "3", "4");
+    }
+
+    @Test
+    void newCardGetsDefaultReviewFields() {
+        Long deckId = jdbcClient.sql("INSERT INTO deck (name) VALUES ('Defaults') RETURNING id")
+                .query(Long.class)
+                .single();
+
+        Map<String, Object> card = jdbcClient.sql("""
+                        INSERT INTO card (deck_id, front, back)
+                        VALUES (:deckId, 'front', 'back')
+                        RETURNING repetitions, ease_factor
+                        """)
+                .param("deckId", deckId)
+                .query()
+                .singleRow();
+
+        assertThat(card)
+                .containsEntry("repetitions", 0)
+                .containsEntry("ease_factor", 2.5);
     }
 }
