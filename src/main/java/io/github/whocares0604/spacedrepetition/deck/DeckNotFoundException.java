@@ -1,10 +1,8 @@
 package io.github.whocares0604.spacedrepetition.deck;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import io.github.whocares0604.spacedrepetition.api.NotFoundException;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class DeckNotFoundException extends RuntimeException {
+public class DeckNotFoundException extends NotFoundException {
 
     public DeckNotFoundException(Long id) {
         super("Deck with id " + id + " not found");

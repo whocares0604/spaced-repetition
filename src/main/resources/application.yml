@@ -7,3 +7,6 @@ spring:
     url: ${DB_URL:jdbc:postgresql://localhost:5433/spaced_repetition}
     username: ${DB_USER:spaced}
     password: ${DB_PASSWORD:spaced}
+  web:
+    locale: en
+    locale-resolver: fixed
