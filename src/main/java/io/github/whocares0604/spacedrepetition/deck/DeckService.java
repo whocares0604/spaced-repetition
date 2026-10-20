@@ -1,6 +1,8 @@
 package io.github.whocares0604.spacedrepetition.deck;
 
+import io.github.whocares0604.spacedrepetition.card.CardRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -8,9 +10,11 @@ import java.util.List;
 public class DeckService {
 
     private final DeckRepository deckRepository;
+    private final CardRepository cardRepository;
 
-    public DeckService(DeckRepository deckRepository) {
+    public DeckService(DeckRepository deckRepository, CardRepository cardRepository) {
         this.deckRepository = deckRepository;
+        this.cardRepository = cardRepository;
     }
 
     public Deck create(String name) {
@@ -31,7 +35,9 @@ public class DeckService {
                 .orElseThrow(() -> new DeckNotFoundException(id));
     }
 
+    @Transactional
     public void delete(Long id) {
+        cardRepository.deleteByDeckId(id);
         if (!deckRepository.deleteById(id)) {
             throw new DeckNotFoundException(id);
         }
