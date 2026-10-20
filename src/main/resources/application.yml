@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: spaced-repetition
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/spaced_repetition}
+    username: ${DB_USER:spaced}
+    password: ${DB_PASSWORD:spaced}
