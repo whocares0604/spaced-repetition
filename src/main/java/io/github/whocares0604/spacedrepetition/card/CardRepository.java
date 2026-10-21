@@ -19,7 +19,7 @@ public class CardRepository {
         return jdbcClient.sql("""
                         INSERT INTO card (deck_id, front, back)
                         VALUES (:deckId, :front, :back)
-                        RETURNING id, deck_id, front, back, created_at, due_at, interval_days
+                        RETURNING id, deck_id, front, back, created_at, due_at, interval_days, repetitions, ease_factor
                         """)
                 .param("deckId", deckId)
                 .param("front", front)
@@ -30,7 +30,7 @@ public class CardRepository {
 
     public List<Card> findByDeckId(Long deckId) {
         return jdbcClient.sql("""
-                        SELECT id, deck_id, front, back, created_at, due_at, interval_days
+                        SELECT id, deck_id, front, back, created_at, due_at, interval_days, repetitions, ease_factor
                         FROM card
                         WHERE deck_id = :deckId
                         ORDER BY id
@@ -40,9 +40,21 @@ public class CardRepository {
                 .list();
     }
 
+    public List<Card> findDueByDeckId(Long deckId) {
+        return jdbcClient.sql("""
+                        SELECT id, deck_id, front, back, created_at, due_at, interval_days, repetitions, ease_factor
+                        FROM card
+                        WHERE deck_id = :deckId AND due_at <= CURRENT_TIMESTAMP
+                        ORDER BY due_at, id
+                        """)
+                .param("deckId", deckId)
+                .query(Card.class)
+                .list();
+    }
+
     public Optional<Card> findById(Long id) {
         return jdbcClient.sql("""
-                        SELECT id, deck_id, front, back, created_at, due_at, interval_days
+                        SELECT id, deck_id, front, back, created_at, due_at, interval_days, repetitions, ease_factor
                         FROM card
                         WHERE id = :id
                         """)
@@ -56,13 +68,31 @@ public class CardRepository {
                         UPDATE card
                         SET front = :front, back = :back
                         WHERE id = :id
-                        RETURNING id, deck_id, front, back, created_at, due_at, interval_days
+                        RETURNING id, deck_id, front, back, created_at, due_at, interval_days, repetitions, ease_factor
                         """)
                 .param("id", id)
                 .param("front", front)
                 .param("back", back)
                 .query(Card.class)
                 .optional();
+    }
+
+    public Card updateReviewState(Long id, int repetitions, int intervalDays, double easeFactor) {
+        return jdbcClient.sql("""
+                        UPDATE card
+                        SET repetitions = :repetitions,
+                            interval_days = :intervalDays,
+                            ease_factor = :easeFactor,
+                            due_at = CURRENT_TIMESTAMP + make_interval(days => :intervalDays)
+                        WHERE id = :id
+                        RETURNING id, deck_id, front, back, created_at, due_at, interval_days, repetitions, ease_factor
+                        """)
+                .param("id", id)
+                .param("repetitions", repetitions)
+                .param("intervalDays", intervalDays)
+                .param("easeFactor", easeFactor)
+                .query(Card.class)
+                .single();
     }
 
     public boolean deleteById(Long id) {

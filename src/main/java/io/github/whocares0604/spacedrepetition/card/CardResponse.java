@@ -9,7 +9,9 @@ public record CardResponse(
         String back,
         OffsetDateTime createdAt,
         OffsetDateTime dueAt,
-        int intervalDays
+        int intervalDays,
+        int repetitions,
+        double easeFactor
 ) {
 
     public static CardResponse from(Card card) {
@@ -20,7 +22,9 @@ public record CardResponse(
                 card.back(),
                 card.createdAt(),
                 card.dueAt(),
-                card.intervalDays()
+                card.intervalDays(),
+                card.repetitions(),
+                card.easeFactor()
         );
     }
 }

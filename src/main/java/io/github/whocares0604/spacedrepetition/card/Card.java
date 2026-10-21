@@ -9,6 +9,8 @@ public record Card(
         String back,
         OffsetDateTime createdAt,
         OffsetDateTime dueAt,
-        int intervalDays
+        int intervalDays,
+        int repetitions,
+        double easeFactor
 ) {
 }

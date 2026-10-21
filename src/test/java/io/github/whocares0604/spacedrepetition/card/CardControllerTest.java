@@ -37,7 +37,9 @@ class CardControllerTest {
                 .andExpect(jsonPath("$.front").value("hola"))
                 .andExpect(jsonPath("$.back").value("hello"))
                 .andExpect(jsonPath("$.dueAt").value(notNullValue()))
-                .andExpect(jsonPath("$.intervalDays").value(0));
+                .andExpect(jsonPath("$.intervalDays").value(0))
+                .andExpect(jsonPath("$.repetitions").value(0))
+                .andExpect(jsonPath("$.easeFactor").value(2.5));
     }
 
     @Test
