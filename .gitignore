@@ -7,3 +7,6 @@ target/
 
 # Environment variables and secrets
 .env
+
+# Personal project notes
+PROJECT_CONTEXT.md
